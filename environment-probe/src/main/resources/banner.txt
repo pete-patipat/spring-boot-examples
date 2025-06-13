@@ -1,0 +1,22 @@
+  _______  _______ .___________.     ______  _______ .______     .___________. __   _______  __   _______  _______   __  
+ /  _____||   ____||           |    /      ||   ____||   _  \    |           ||  | |   ____||  | |   ____||       \ |  | 
+|  |  __  |  |__   `---|  |----`   |  ,----'|  |__   |  |_)  |   `---|  |----`|  | |  |__   |  | |  |__   |  .--.  ||  | 
+|  | |_ | |   __|      |  |        |  |     |   __|  |      /        |  |     |  | |   __|  |  | |   __|  |  |  |  ||  | 
+|  |__| | |  |____     |  |        |  `----.|  |____ |  |\  \----.   |  |     |  | |  |     |  | |  |____ |  '--'  ||__| 
+ \______| |_______|    |__|         \______||_______|| _| `._____|   |__|     |__| |__|     |__| |_______||_______/ (__) 
+ 
+ Brought to you by www.certificationexam.guru. Practice exams for Java, AWS, Spring, Scrum and more!
+                                                                                                                         
+🚀 ${application.title} - v${application.version}
+🔧 Spring Boot ${spring-boot.version}
+☕ Java ${java.version} (${java.vm.name})
+💻 OS: ${os.name} ${os.arch}
+📦 User: ${user.name}
+🆔 PID: ${PID}, Host: ${HOSTNAME}
+🌱 Profile: ${spring.profiles.active}
+
+Try http://localhost/swagger-ui/index.html for the Swagger UI.
+
+Powered by www.certificationexam.guru Check us out!
+Follow me on Twitter @cameronmcnz, and subscribe on YouTube, youtube.com/@cameronmcnz
+
