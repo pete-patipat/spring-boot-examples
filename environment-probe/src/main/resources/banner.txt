@@ -7,6 +7,7 @@
  
  Brought to you by www.certificationexam.guru. Practice exams for Java, AWS, Spring, Scrum and more!
                                                                                                                          
+
 🚀 ${application.title} - v${application.version}
 🔧 Spring Boot ${spring-boot.version}
 ☕ Java ${java.version} (${java.vm.name})
@@ -15,8 +16,13 @@
 🆔 PID: ${PID}, Host: ${HOSTNAME}
 🌱 Profile: ${spring.profiles.active}
 
-Try http://localhost/swagger-ui/index.html for the Swagger UI.
+🌐 Website:  certificationexam.guru
+🎥 YouTube:  youtube.com/@cameronmcnz
+💼 LinkedIn: www.linkedin.com/in/cameronwmckenzie
+🐦 Twitter/X: twitter.com/cameronmcnz
+🌌 Bluesky:   bsky.app/profile/cameronmckenzie.com
 
-Powered by www.certificationexam.guru Check us out!
-Follow me on Twitter @cameronmcnz, and subscribe on YouTube, youtube.com/@cameronmcnz
+📘 Try http://localhost:<port>/swagger-ui/index.html for the Swagger UI.
+
+Built by Cameron McKenzie and hosted at www.certificationexam.guru — Check us out!
 

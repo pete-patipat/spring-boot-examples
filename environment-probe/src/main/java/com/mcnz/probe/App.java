@@ -3,6 +3,7 @@ package com.mcnz.probe;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.lang.management.ManagementFactory;
 import java.lang.management.ThreadMXBean;
@@ -17,10 +18,10 @@ import java.util.Timer;
 import java.util.TimerTask;
 import java.util.UUID;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.boot.SpringApplication;
-import org.springframework.boot.actuate.env.EnvironmentEndpoint;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
-import org.springframework.context.annotation.Bean;
 import org.springframework.core.env.Environment;
 import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -147,7 +148,7 @@ public class App {
         return "Completed after " + seconds + " seconds";
     }
 
-    @GetMapping("/env/files")
+    @GetMapping("/env/listfiles")
     @Operation(summary = "List files in /workingdirectory")
     public Map<String, Object> listWorkingDirectoryFiles() {
         File dir = new File("/workingdirectory");
@@ -159,6 +160,54 @@ public class App {
         } else {
             result.put("error", "/workingdirectory does not exist or is not a directory");
         }
+        return result;
+    }
+    
+    @PostMapping("/env/writefiles")
+    @Operation(summary = "Write a probe file into /workingdirectory with timestamp")
+    public Map<String, Object> writeProbeFile() {
+        Map<String, Object> result = new HashMap<>();
+        File dir = new File("/workingdirectory");
+        if (!dir.exists() || !dir.isDirectory()) {
+            String msg = "/workingdirectory does not exist or is not a directory";
+            result.put("error", msg);
+            System.err.println("[ERROR] " + msg);
+            return result;
+        }
+
+        String timestamp = String.valueOf(System.currentTimeMillis());
+        File file = new File(dir, "probe-" + timestamp + ".txt");
+        try (FileWriter writer = new FileWriter(file)) {
+            writer.write("Probe file created at " + timestamp);
+            result.put("fileName", file.getName());
+            result.put("message", "File written successfully");
+            System.out.println("[INFO] Successfully wrote file: " + file.getAbsolutePath());
+        } catch (IOException e) {
+            String errorType = file.exists() && !file.canWrite() ? "File exists but is read-only" : "IOException occurred";
+            result.put("error", errorType);
+            result.put("details", e.getMessage());
+            System.err.println("[ERROR] Failed to write file: " + file.getAbsolutePath());
+            e.printStackTrace();
+        }
+        return result;
+    }
+    
+    @GetMapping("/env/logtest")
+    @Operation(summary = "Generate sample log messages of various levels")
+    public Map<String, Object> logTest() {
+        Logger logger = LoggerFactory.getLogger(App.class);
+        Map<String, Object> result = new HashMap<>();
+
+        logger.trace("This is a TRACE log message - very fine-grained");
+        logger.debug("This is a DEBUG log message - useful for debugging");
+        logger.info("This is an INFO log message - general operational info");
+        logger.warn("This is a WARN log message - something unexpected but not broken");
+        logger.error("This is an ERROR log message - something went wrong");
+
+        System.out.println("System.out.println: standard console output");
+        System.err.println("System.err.println: standard error output");
+
+        result.put("message", "Log messages emitted. Check application logs.");
         return result;
     }
 
