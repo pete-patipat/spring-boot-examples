@@ -29,4 +29,24 @@ public class WebController {
 
 		return "results";
 	}
+
+	private String determineWinner(String choice) {
+		Gesture clientGesture = Gesture.valueOf(choice.toUpperCase());
+		Gesture serverGesture = Gesture.ROCK; // Hardcoded for now as per your original code
+
+		if (clientGesture.equals(serverGesture)) {
+			return "tie";
+		}
+
+		switch (clientGesture) {
+			case PAPER:
+				return "win";
+			case SCISSORS:
+				return "losse"; // Note: your endpoint is /score/losses, so ensure this matches
+			case ROCK:
+			default:
+				return "tie";
+		}
+	}
 }
+

@@ -1,34 +1,30 @@
 package com.mcnz.rps.spring;
 
-import java.util.List;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
-@RequestMapping("/score") // Base path for all methods in this class
+@RequestMapping("/score")
 public class ScoreService {
 
 	@Autowired
 	private ScoreRepository scoreRepository;
 
-	@GetMapping // Maps to GET /score
+	@GetMapping
 	public Score getScore() {
-		return scoreRepository.findScore();
+		// JpaRepository returns an 'Optional'.
+		// We'll look for ID 1, or create a new Score if it doesn't exist.
+		return scoreRepository.findById(1L).orElseGet(() -> {
+			Score newScore = new Score();
+			return scoreRepository.save(newScore);
+		});
 	}
 
-	@GetMapping("/wins") // Maps to GET /score/wins
-	public int getWins() {
-		return scoreRepository.findScore().getWins();
-	}
-
-	@PostMapping("/wins") // Maps to POST /score/wins
+	@PostMapping("/wins")
 	public boolean increaseWins() {
-		Score score = scoreRepository.findScore();
+		Score score = getScore(); // Reuse our logic above
 		score.increaseWins();
-		scoreRepository.save(score);
+		scoreRepository.save(score); // Standard JPA save method
 		return true;
 	}
-
-	// Repeat same pattern for /losses and /ties...
 }
