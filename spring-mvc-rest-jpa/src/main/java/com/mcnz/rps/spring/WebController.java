@@ -11,42 +11,26 @@ import org.springframework.web.client.RestTemplate;
 public class WebController {
 
 	@Autowired
-	private RestTemplate restTemplate; // Inject the bean from RoshamboApplication
+	private RestTemplate restTemplate;
+
+	@Autowired // INJECT the new logic bean
+	private RoshamboService roshamboService;
 
 	@GetMapping("/playagame")
 	public String playRoshambo(@RequestParam(name = "choice", required=false) String choice, Model model) {
-		// ... (check for null choice)
+		if (choice == null) return "index";
 
-		// Instead of result == "tie", use .equals for strings in Java!
-		String result = determineWinner(choice);
+		// Ask the Service to do the math/logic
+		String result = roshamboService.determineWinner(choice);
 
-		// Use the injected restTemplate for all calls
-		String url = "http://localhost:8080/score/" + result + "s"; // e.g., /score/wins
+		// Update score via REST
+		String url = "http://localhost:8080/score/" + result + "s";
 		restTemplate.postForObject(url, "", Object.class);
 
+		// Get updated score to show Pete the results
 		Score score = restTemplate.getForObject("http://localhost:8080/score", Score.class);
-		model.addAttribute("score", score);
 
+		model.addAttribute("score", score);
 		return "results";
 	}
-
-	private String determineWinner(String choice) {
-		Gesture clientGesture = Gesture.valueOf(choice.toUpperCase());
-		Gesture serverGesture = Gesture.ROCK; // Hardcoded for now as per your original code
-
-		if (clientGesture.equals(serverGesture)) {
-			return "tie";
-		}
-
-		switch (clientGesture) {
-			case PAPER:
-				return "win";
-			case SCISSORS:
-				return "losse"; // Note: your endpoint is /score/losses, so ensure this matches
-			case ROCK:
-			default:
-				return "tie";
-		}
-	}
 }
-
