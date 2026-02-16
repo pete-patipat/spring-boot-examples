@@ -7,48 +7,35 @@ import javax.persistence.PersistenceContext;
 import javax.persistence.Query;
 import javax.transaction.Transactional;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
-@Repository
-@Transactional
-public class ScoreRepository {
+@RestController
+@RequestMapping("/score")
+public class ScoreService {
 
-	@PersistenceContext
-	private EntityManager entityManager;
+	@Autowired
+	private ScoreRepository scoreRepository;
 
-	public Score find(long id) {
-		return entityManager.find(Score.class, id);
+	@GetMapping
+	public Score getScore() {
+		// JpaRepository returns an 'Optional'.
+		// We'll look for ID 1, or create a new Score if it doesn't exist.
+		return scoreRepository.findById(1L).orElseGet(() -> {
+			Score newScore = new Score();
+			return scoreRepository.save(newScore);
+		});
 	}
 
-	public List<Score> findAll() {
-		Query query = entityManager.createNamedQuery("query_find_all_scores", Score.class);
-		return query.getResultList();
+	@PostMapping("/wins")
+	public boolean increaseWins() {
+		Score score = getScore(); // Reuse our logic above
+		score.increaseWins();
+		scoreRepository.save(score); // Standard JPA save method
+		return true;
 	}
-
-	public long save(Score score) {
-		entityManager.persist(score);
-		System.out.println("Persisted score: " + score.getId() + " wins " + score.getWins() +"  ties " + score.getTies()); 
-		return score.getId();
-	}
-	
-	public Score findScore() {
-		System.out.println("Finding the score");
-		Score score=null;
-		Query query = entityManager.createNamedQuery("query_find_all_scores", Score.class);
-		List scores = query.getResultList();
-		System.out.println("Number of scores: " + scores.size());
-		if (scores.size()>0) {
-			//score = (Score)scores.get(0);
-			score = entityManager.find(Score.class, new Long(1));
-		} else {
-			score = new Score();
-			score.setId(System.currentTimeMillis());
-			entityManager.persist(score);
-			System.out.println("New score created with id of: " + score.getId());
-		}
-		
-		return score;
-		
-	}
-
 }

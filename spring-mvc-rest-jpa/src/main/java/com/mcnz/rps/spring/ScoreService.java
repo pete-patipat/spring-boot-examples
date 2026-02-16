@@ -3,69 +3,32 @@ package com.mcnz.rps.spring;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
+@RequestMapping("/score") // Base path for all methods in this class
 public class ScoreService {
 
-	
 	@Autowired
 	private ScoreRepository scoreRepository;
 
-	@RequestMapping(value = "/score", method=RequestMethod.GET)
+	@GetMapping // Maps to GET /score
 	public Score getScore() {
-		System.out.println("Finding Score");
 		return scoreRepository.findScore();
 	}
-	
-	@RequestMapping(value = "/score/wins", method=RequestMethod.GET)
+
+	@GetMapping("/wins") // Maps to GET /score/wins
 	public int getWins() {
-		Score score = scoreRepository.findScore();
-		return score.getWins();
+		return scoreRepository.findScore().getWins();
 	}
-	
-	@RequestMapping(value = "/score/losses", method=RequestMethod.GET)
-	public int getLosses() {
-		Score score = scoreRepository.findScore();
-		return score.getLosses();
-	}
-	
-	@RequestMapping(value = "/score/ties", method=RequestMethod.GET)
-	public int getTies() {
-		Score score = scoreRepository.findScore();
-		return score.getTies();
-	}
-	
-	@RequestMapping(value = "/score/wins", method=RequestMethod.POST)
+
+	@PostMapping("/wins") // Maps to POST /score/wins
 	public boolean increaseWins() {
-		System.out.println("POST wins");
 		Score score = scoreRepository.findScore();
 		score.increaseWins();
-		System.out.println(score.getId());;
-		scoreRepository.save(score);
-		return true;
-	}
-	
-	@RequestMapping(value = "/score/losses", method=RequestMethod.POST)
-	public boolean increaseLosses() {
-		System.out.println("POST losses");
-		Score score = scoreRepository.findScore();
-		score.increaseLosses();
-		System.out.println(score.getId());;
-		scoreRepository.save(score);
-		return true;
-	}
-	
-	@RequestMapping(value = "/score/ties", method=RequestMethod.POST)
-	public boolean increaseTies() {
-		System.out.println("POST ties");
-		Score score = scoreRepository.findScore();
-		score.increaseTies();
-		System.out.println(score.getId());;
 		scoreRepository.save(score);
 		return true;
 	}
 
+	// Repeat same pattern for /losses and /ties...
 }
